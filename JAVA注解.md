@@ -10,6 +10,8 @@ JAVA注解的分类：
 3）运行时注解：在运行阶段还起作用，甚至会影响运行逻辑的注解，如：@Autowired
 
 自定义注解的语法要求
+
+~~~java
 //ElementType可以有很多类型：CONSTRUCTOR(构造方法声明)、FILED(字段声明)、
 //LOCAL_VARIABLE(局部变量声明)、METHOD(方法声明)、PACKAGE(包声明)、PARAMETER(参数声明)、TYPE(类、接口)
 @Target({ElementType.METHOD,ElementType.TYPE})
@@ -30,21 +32,29 @@ public @interface Table {
     //可以用default为成员指定默认值
     int age() default 18;
 }
+~~~
 
 注解类
+
+~~~java
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Table {
     String value();
 }
+~~~
 
+~~~java
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Column {
     String value();
 }
+~~~
 
 实体类
+
+```java
 @Table("department")
 public class Department {
     @Column("name")
@@ -55,45 +65,40 @@ public class Department {
     private String leader;
 
     public String getName() { return name; }
-    
     public void setName(String name) { this.name = name; }
-
     public Integer getAmount() { return amount; }
-
     public void setAmount(Integer amount) { this.amount = amount; }
-
     public String getLeader() { return leader; }
-
     public void setLeader(String leader) { this.leader = leader; }
-
 }
+```
 
 测试类
+
+~~~java
 public class Test {
     public static void main(String[] args){
         //获取类名
         Department f = new Department();
         f.setAmount(10);
-
         //获取类名：类+类名即
         Class c = f.getClass();
         System.out.println(c);//class Department
-
+        
         //判断Department类是否有Table的注解
         boolean exists = c.isAnnotationPresent(Table.class);
         System.out.println(exists);//true
-
+        
         //得到Department类关于Table的注解：
         Table t = (Table)c.getAnnotation(Table.class);
         System.out.println(t);//@Table(value=department)
-
+        
         //得到Department类关于Table的注解的value值
         String tableName = t.value();
         System.out.println(tableName);//department
-
+        
         //获取字段名数组：private java.lang.String Department.name。。。
         Field[] fields = c.getDeclaredFields();
-
         for(Field field : fields){
             //获取Department类的字段名
             System.out.println(field);//private java.lang.Integer Department.amount
@@ -133,3 +138,6 @@ public class Test {
         }
     }
 }
+~~~
+
+
